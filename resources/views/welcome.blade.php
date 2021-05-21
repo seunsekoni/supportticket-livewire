@@ -12,7 +12,7 @@
 </head>
 <body>
     {{-- @livewire('counter') --}}
-    <livewire:comments :initialComments="$initialComments"/>
+    <livewire:comments />
     @livewireScripts
 </body>
 </html>

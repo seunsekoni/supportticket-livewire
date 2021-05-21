@@ -4,13 +4,39 @@ namespace App\Http\Livewire;
 
 use App\Models\Comment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic;
 use Livewire\Component;
+use Livewire\WithPagination;
+use \Illuminate\Support\Str;
 
 class Comments extends Component
 {
-    public $comments;
+    use WithPagination;
 
     public $newComment;
+
+    public $image;
+
+    protected $listeners = ['fileUpload' => 'handleFileUpload'];
+
+    public function handleFileUpload($imageData)
+    {
+        $this->image = $imageData;
+    }
+    public function storeImage()
+    {
+        if (!$this->image) {
+            return null;
+        }
+
+        $img = ImageManagerStatic::make($this->image)->encode('jpg');
+        $name = Str::random() . '.jpg';
+
+        Storage::disk('public')->put($name, $img);
+
+        return $name;
+    }
 
     public function addComment()
     {
@@ -21,11 +47,11 @@ class Comments extends Component
         $createdComment = Comment::create([
             'body' => $this->newComment,
             'user_id' => 1,
+            'image' => $this->storeImage()
         ]);
 
-        // Prepend the the creted comment to the collection.
-        $this->comments->prepend($createdComment);
         $this->newComment = '';
+        $this->image = '';
         session()->flash('message', 'Comment added successfully');
     }
 
@@ -34,15 +60,10 @@ class Comments extends Component
      */
     public function remove($commentId)
     {
-        $this->comments = $this->comments->except($commentId);
         $comment = Comment::find($commentId);
         $comment->delete();
+        Storage::disk('public')->delete($comment->image);
         session()->flash('message', 'Comment deleted successfully');
-    }
-
-    public function mount($initialComments)
-    {
-        $this->comments = $initialComments;
     }
 
     /**
@@ -57,6 +78,9 @@ class Comments extends Component
 
     public function render()
     {
-        return view('livewire.comments');
+        $initialComments = Comment::latest()->paginate(10);
+        return view('livewire.comments', [
+            'comments' => $initialComments
+        ]);
     }
 }
