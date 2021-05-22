@@ -18,6 +18,10 @@ class CreateSupportTicketsTable extends Migration
             $table->string('question');
             $table->timestamps();
         });
+
+        Schema::table('comments', function (Blueprint $table) {
+            $table->unsignedBigInteger('support_ticket_id');
+        });
     }
 
     /**
@@ -28,5 +32,9 @@ class CreateSupportTicketsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('support_tickets');
+
+        Schema::table('comments', function (Blueprint $table) {
+            $table->dropColumn('support_ticket_id');
+        });
     }
 }

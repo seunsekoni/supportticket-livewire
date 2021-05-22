@@ -22,7 +22,7 @@ class SupportTicketFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'question' => $this->faker->text(150)
         ];
     }
 }

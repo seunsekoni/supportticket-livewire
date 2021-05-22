@@ -1,5 +1,5 @@
-<div class="flex justify-center">
-    <div class="w-6/12">
+<div class="">
+    <div class="w-12/12">
         <h1 class="text-3xl">Comments</h1>
         @error('newComment') <span class="text-red-500 text-xs">{{$message}}</span>@enderror
         <div>
@@ -31,7 +31,7 @@
                 </div>
                 <p class="text-gray-800">{{ $comment->body }}</p>
                 
-                    <img src="{{ $comment->imagePath }}" alt="kmklm" srcset="">
+                    <img src="{{ $comment->imagePath }}" alt="" srcset="">
                 
             </div>
         @endforeach

@@ -18,7 +18,17 @@ class Comments extends Component
 
     public $image;
 
-    protected $listeners = ['fileUpload' => 'handleFileUpload'];
+    public $ticketId;
+
+    protected $listeners = [
+        'fileUpload' => 'handleFileUpload',
+        'ticketSelected' => 'ticketSelected'
+    ];
+
+    public function ticketSelected($ticketId)
+    {
+        $this->ticketId = $ticketId;
+    }
 
     public function handleFileUpload($imageData)
     {
@@ -47,6 +57,7 @@ class Comments extends Component
         $createdComment = Comment::create([
             'body' => $this->newComment,
             'user_id' => 1,
+            'support_ticket_id' => $this->ticketId,
             'image' => $this->storeImage()
         ]);
 
@@ -78,7 +89,7 @@ class Comments extends Component
 
     public function render()
     {
-        $initialComments = Comment::latest()->paginate(10);
+        $initialComments = Comment::where('support_ticket_id', $this->ticketId)->paginate(10);
         return view('livewire.comments', [
             'comments' => $initialComments
         ]);
