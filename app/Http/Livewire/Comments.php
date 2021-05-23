@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic;
 use Livewire\Component;
 use Livewire\WithPagination;
-use \Illuminate\Support\Str;
+use Illuminate\Support\Str;
 
 class Comments extends Component
 {
